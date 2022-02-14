@@ -1,10 +1,9 @@
 import random
 #history of prior nicknames (important later)
 history = []
-specialcon = {}
 #signals whether a special condition is in effect
 variant = False
-nicknames = ['The Flash', 'The Cowboy', 'QiQi', 'The Addict', '?', 'The Bitter', 'The Indecisive', 'The Speler', 'White Wolf', '4782817', 'The Unlucky', 'The Chosen One', 'The Amnesiac', 'Happy Apple', 'Mysterious Melon']
+nicknames = [ 'The Cowboy', 'QiQi', '?', 'The Bitter', 'The Indecisive', 'The Speler', 'White Wolf', '4782817', 'The Unlucky', 'The Chosen One', 'The Amnesiac', 'Mysterious Melon']
 
 #I want to create a dictionary because it is faster.
 nicknameMap = {}
@@ -34,9 +33,10 @@ def add():
         nicknameMap[addition] = True
         print(addition + ' added')
     else:
-        print("that nickname is already in the list!")
+        print("that nickname is already in the list")
+
+#special condition, will repeat the previous 7 nicknames or until first nickname when 'The Amnesiac' is gotten
 def amnesiac():
-    #we want to redo the previous nicknames, up to min(7 nicknames prior, first nickname)
     global specialcon
     global variant
     length = len(history)
@@ -49,15 +49,17 @@ def amnesiac():
             info['repeat'] = history[0: length]
         info['count'] = 1
         nickname =  info['repeat'][0]
-        print(info['repeat'])
     else:
+        nickname = info['repeat'][info['count']]
         info['count'] += 1
-        nickname = info['repeat'][info['count'] - 1]
+
     if len(info['repeat']) == info['count']:
         variant = False
         info['count'] = 0
         info['repeat'] = ''
     return nickname
+
+#special condition, calls you crap 5 times in a row if you get 'The Unlucky'
 def unlucky():
     global specialcon
     global variant
@@ -66,6 +68,7 @@ def unlucky():
         variant = False
         specialcon['The Unlucky']['count'] = 0
     return 'crap'
+
 #main function
 def repeat():
     global variant
@@ -81,11 +84,12 @@ def repeat():
             print(i)
     else:
         nameSplit = name.split(' ', 1)
-        #getting some nicknames will trigger future events
+
+        #check to see if special condition is in effect
         if variant:
             formatOutput(nameSplit, variant['func']())
-        #possibility of getting rare one in 10 thousand nickname
         else:
+            #possibility of getting rare one in 10 thousand nickname
             if random.random() < 0.0001:
                 formatOutput(nameSplit, 'one in 10 thousand')
             else:
